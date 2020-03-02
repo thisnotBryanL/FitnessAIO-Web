@@ -1,0 +1,38 @@
+
+body{
+    background-color: #ebeff5;
+}
+
+#total-orders{
+    background-color: #4cb4c7;
+}
+#orders-delivered{
+    background-color: #7abecc;
+}
+#orders-pending{
+    background-color: #7CD1C0;
+        }
+
+/* body {
+  padding: 15px;
+}
+
+.input-label {
+  width: 150px;
+  text-align: left;
+}
+
+.input-macros {
+  width: 100px;
+  text-align: left;
+}
+
+.input-select {
+  width: 100%;
+}
+
+.btn-toggle {
+  color: #A66D3B;
+  background-color: #FCF8E3;
+  border-color: #8A6D3B;
+} */

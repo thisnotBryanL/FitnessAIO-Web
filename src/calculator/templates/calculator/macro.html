@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<br>
+
+<head>
+    <link data-require="bootstrap@*" data-semver="3.3.5" rel="stylesheet"
+        href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link data-require="font-awesome@*" data-semver="4.3.0" rel="stylesheet"
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <script data-require="jquery@*" data-semver="2.1.4" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script data-require="bootstrap@*" data-semver="3.3.5"
+        src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script data-require="angular.js@1.4.3" data-semver="1.4.3"
+        src="https://code.angularjs.org/1.4.3/angular.js"></script>
+    <script data-require="ui-router@*" data-semver="0.2.15"
+        src="//rawgit.com/angular-ui/ui-router/0.2.15/release/angular-ui-router.js"></script>
+    <script data-require="underscore.js@*" data-semver="1.8.3"
+        src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script data-require="ui-bootstrap@*" data-semver="1.1.1"
+        src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-1.1.1.js"></script>
+    <script type="text/javascript" src="{ % static 'javascript/app.js' % }"></script>
+    <script type="text/javascript" src="{ % static 'javascript/MainController.js' % }"></script>
+    <script type="text/javascript" src="{ % static 'javascript/ngStorage.js' % }"></script>
+</head>
+
+<body ng-controller="mainController as vm">
+    <div class="container-fluid">
+        <form>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Estimating Maintenance Calories - the easy way</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group has-warning">
+                        <div class="input-group input-select">
+                            <span class="input-group-addon input-label">Activity</span>
+                            <select class="form-control" ng-options="option.name for option in vm.activityOptions"
+                                ng-model="vm.selectedActivity" title="{{vm.selectedActivity.description}}"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group has-warning">
+                        <div class="input-group">
+                            <span class="input-group-addon input-label">Weight in kg</span>
+                            <input type="text" class="form-control" ng-model="vm.inputWeight"
+                                ng-model-options="{debounce: 500}" placeholder="" />
+                            <!--<span class="input-group-addon">kg</span>-->
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-toggle" ng-click="vm.toggleInputUnitsWeight()"
+                                    tabindex="-1" title="Click to toggle kg/lbs">
+                                    {{vm.storage.inputUnitsWeight}}
+                                    &nbsp;<i class="fa fa-toggle-on"
+                                        ng-class="{'fa-flip-horizontal': vm.storage.inputUnitsWeight !== 'kg'}"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <fieldset disabled="">
+                        <div class="form-group" ng-class="{'has-success' : vm.activeMaintenanceFormula === 'KB'}">
+                            <div class="input-group">
+                                <span class="input-group-addon input-label">Kinobody formula (factor:
+                                    {{vm.selectedActivity.kinoFactor}})</span>
+                                <input type="text" ng-model="vm.kinobodyEstimateMaintenanceCalories_display"
+                                    class="form-control text-right" placeholder="Required: weight" readonly="" />
+                                <span class="input-group-addon">kcal</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <hr />
+
+            <!-- <div class="row">
+          <div class="col-md-12">
+            <h4>Estimating Maintenance Calories - Mifflin-St Jeor Formula</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon input-label">Height in cm</span>
+                <input type="text" class="form-control" ng-model="vm.inputHeight" ng-model-options="{debounce: 500}" placeholder="" />
+                <span class="input-group-addon">cm</span>
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-toggle" ng-click="vm.toggleInputUnitsHeight()" tabindex="-1" title="Click to toggle cm/inches">
+                    {{vm.storage.inputUnitsHeight}}
+                    &nbsp;<i class="fa fa-toggle-on" ng-class="{'fa-flip-horizontal': vm.storage.inputUnitsHeight !== 'cm'}"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon input-label">Age in years</span>
+                <input type="text" class="form-control" ng-model="vm.storage.ageYears" ng-model-options="{debounce: 500}" placeholder="" />
+                <span class="input-group-addon">years</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="btn-group btn-group-justified">
+                <label class="btn btn-default" ng-model="vm.storage.gender" uib-btn-radio="'male'">
+                  <i class="fa fa-fw fa-male"></i> male
+                </label>
+                <label class="btn btn-default" ng-model="vm.storage.gender" uib-btn-radio="'female'">
+                  <i class="fa fa-fw fa-female"></i> female
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <fieldset disabled="">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon input-label">Mifflin-St Jeor BMR</span>
+                  <input type="text" ng-model="vm.bmr_display" class="form-control text-right" placeholder="Required: weight, gender, height, age" readonly="" />
+                  <span class="input-group-addon">kcal</span>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{'has-success' : vm.activeMaintenanceFormula === 'TEE'}">
+                <div class="input-group">
+                  <span class="input-group-addon input-label">Total Energy Expenditure TEE</span>
+                  <input type="text" ng-model="vm.tee_display" id="tee" class="form-control text-right" placeholder="Required: BMR, activity" readonly/>
+                  <span class="input-group-addon">kcal</span>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <hr /> -->
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Set your goal</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group has-warning">
+                        <div class="input-group input-select">
+                            <span class="input-group-addon input-label">Your goal</span>
+                            <select class="form-control" ng-options="option.name for option in vm.deficitOptions"
+                                ng-model="vm.selectedDeficit"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <fieldset disabled="">
+                        <div class="form-group has-success">
+                            <div class="input-group">
+                                <span class="input-group-addon input-label">Maintenance</span>
+                                <input type="text" ng-model="vm.maintenanceCalories" id="maintenanceCalories"
+                                    class="form-control text-right" placeholder="" readonly="" />
+                                <span class="input-group-addon">kcal</span>
+                            </div>
+                        </div>
+                        <div class="form-group has-success">
+                            <div class="input-group">
+                                <span class="input-group-addon input-label">Daily calories
+                                    ({{vm.selectedDeficit.goal}})</span>
+                                <input type="text" ng-model="vm.deficitCalories" id="deficitCalories"
+                                    class="form-control text-right" placeholder="" readonly="" />
+                                <span class="input-group-addon">kcal</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Your Macros</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group input-select">
+                            <span class="input-group-addon input-label">Macros split</span>
+                            <select class="form-control" ng-options="option.name for option in vm.macroSplitOptions"
+                                ng-model="vm.selectedMacroSplit"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <fieldset disabled="">
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <span class="input-group-addon input-macros">Protein</span>
+                                        <input type="text" ng-model="vm.macrosProtein" id="macrosProtein"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">g</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="vm.percentageProtein" id="macrosProtein"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <span class="input-group-addon input-macros">Fats</span>
+                                        <input type="text" ng-model="vm.macrosFats" id="macrosFat"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">g</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="vm.percentageFats" id="macrosProtein"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <span class="input-group-addon input-macros">Carbs</span>
+                                        <input type="text" ng-model="vm.macrosCarbs" id="macrosCarb"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">g</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group has-success">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="vm.percentageCarbs" id="macrosProtein"
+                                            class="form-control text-right" placeholder="" readonly="" />
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default" ng-click="vm.resetStorage()" tabindex="-1">
+                            <i class="fa fa-fw fa-remove"></i>
+                            Clear my data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</body>
+
+</html>
+
+
+{% endblock %}

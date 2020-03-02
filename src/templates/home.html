@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+
+{% if user.is_authenticated %}
+<h3>Hi, {{user.username}}</h3>
+<p>Your current calories = {{user.profile.calories}}</p>
+<form action="{% url 'registration:update-calories' %} "><input type="submit" value="Update Calories"></form>
+{% else %}
+<h3>You are not logged in.</h3>
+{% endif %}
+<hr>
+{% include 'status.html' %}
+
+<br>
+<div class="row">
+    
+    <div class="col-md-5">
+        
+        <h5>Macros:</h5>
+        <hr>
+        <div class="card card-body">
+            <a class="btn btn-primary  btn-sm btn-block" href="{% url 'registration:update-calories' %}">Update Calories</a>
+            <table class="table table-sm">
+                <tr>
+                    <th></th>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <h5>LAST 5 Food Entries</h5>
+        <hr>
+        <div class="card card-body">
+            <a class="btn btn-primary  btn-sm btn-block" href="http://127.0.0.1:8000/foodEntry/create/">Create Food Entry</a>
+            <table class="table table-sm">
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                    <th>Time</th>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}
