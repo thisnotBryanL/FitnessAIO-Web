@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
 <h3>Hi, {{user.username}}</h3>
 <p>Your current calories = {{user.profile.calories}}</p>
-<form action="{% url 'registration:update-calories' %} "><input type="submit" value="Update Calories"></form>
+<form action="{% url 'registration:update-calories' %} "><input type="submit" value="Update Profile"></form>
 {% else %}
 <h3>You are not logged in.</h3>
 {% endif %}
@@ -24,10 +24,14 @@
             <a class="btn btn-primary  btn-sm btn-block" href="{% url 'registration:update-calories' %}">Update Calories</a>
             <table class="table table-sm">
                 <tr>
-                    <th></th>
                     <th>Protein</th>
                     <th>Carbohydrates</th>
                     <th>Fats</th>
+                </tr>
+                <tr>
+                    <td>{{protein}}</td>
+                    <td>{{carbs}}</td>
+                    <td>{{fats}}</td>
                 </tr>
 
             </table>

@@ -22,4 +22,10 @@ class EditCaloriesForm(forms.ModelForm):
     calories = forms.DecimalField(required = False)
     class Meta:
         model = Profile
-        fields = ['calories']
+        fields = [
+            'calories',
+            'feet',
+            'inches',
+            'weight',
+            'gender'
+        ]

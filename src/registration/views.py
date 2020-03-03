@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import transaction
 
+from calculator.calcFuncs import calorieCalc, macroCalc
 from.models import Profile
 
 from django.views.generic import(
@@ -19,9 +20,15 @@ from .forms import SignUpForm, EditCaloriesForm
 from .models import Profile
 
 def home(request):
-    profile = Profile()
+    profile = request.user.profile
+    macros = dict()
+    macros = macroCalc(float(profile.weight),profile.gender,float(profile.calories))
     context = {
         "userProfile" : profile,
+        "carbs" : macros['carbs'],
+        "fats" : macros['fat'],
+        "protein" : macros['protein']
+
     }
     return render(request, 'home.html', context)
 
@@ -35,7 +42,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('homeView')
+            return redirect('registration:update-calories')
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})

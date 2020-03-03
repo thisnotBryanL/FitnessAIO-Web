@@ -5,6 +5,8 @@
 <br>
 <form method="post">
     {% csrf_token %}
+    If you don't know your calories use this <a href="#"><strong>calculator</strong></a>
+    <br><br>
     {{ profile_form.as_p }}
     <button type="submit">Save changes</button>
 </form>
