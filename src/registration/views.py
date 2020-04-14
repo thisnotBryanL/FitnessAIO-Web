@@ -5,9 +5,11 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import transaction
+from django.utils import timezone
 
-from calculator.calcFuncs import calorieCalc, macroCalc
+from calculator.calcFuncs import macroCalc, calcRemainCalories
 from.models import Profile
+from foodEntry.models import FoodItem
 
 from django.views.generic import(
     CreateView,
@@ -20,17 +22,35 @@ from .forms import SignUpForm, EditCaloriesForm
 from .models import Profile
 
 def home(request):
-    profile = request.user.profile
-    macros = dict()
-    macros = macroCalc(float(profile.weight),profile.gender,float(profile.calories))
-    context = {
-        "userProfile" : profile,
-        "carbs" : macros['carbs'],
-        "fats" : macros['fat'],
-        "protein" : macros['protein']
+    if not request.user.is_authenticated:
+        return render(request, 'home.html', {})
+    else:
+        profile = request.user.profile
+        macros = dict()
+        macros = macroCalc(float(profile.weight),'average',float(profile.calories))
 
-    }
-    return render(request, 'home.html', context)
+        #Query Set that retrieves the 5 most recent food items entered
+        last_5Food = FoodItem.objects.filter(user=profile.user).order_by('-date_added')[:5]
+                
+        #Queries food items only for the current day
+        queryset = FoodItem.objects.filter(
+            date_added__date=timezone.now().date())
+
+        #Calculator to calculate the remaining calories left after querying food consumed for the day
+        calsFromFood = calcRemainCalories(queryset, profile.calories,macros['protein'], macros['fat'], macros['carbs'])
+        
+        context = {
+            "userProfile" : profile,
+            "carbs" : macros['carbs'],
+            "fats" : macros['fat'],
+            "protein" : macros['protein'],
+            "last5Food" : last_5Food,
+            "caloriesRemain" : calsFromFood['calsRemain'],
+            "proteinRemain" : calsFromFood['proteinRemain'],
+            "fatRemain" : calsFromFood['fatRemain'],
+            "carbsRemain" : calsFromFood['carbsRemain']
+        }
+        return render(request, 'home.html', context)
 
 def signup(request):
     if request.method == 'POST':

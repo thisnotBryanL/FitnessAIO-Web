@@ -68,3 +68,32 @@ def macroCalc(weight,choice,calories):
 
 my_macros = macroCalc(150,'male',calories)
 print(my_macros['fat'])
+
+
+# Function that takes in current day, queries food results for that day, and then calculates remaining calories
+def calcRemainCalories(foodlist, calories,protein,fat,carbs):
+    value = 0
+    proteinRemain = 0
+    fatRemain = 0
+    carbsRemain = 0
+
+    for item in foodlist:
+        value += item.calories
+        proteinRemain += item.protein
+        fatRemain += item.fat
+        carbsRemain += item.carbohydrates
+        print(item.protein, " ", item.fat, " ", item.carbohydrates)
+
+    proteinRemain = protein - proteinRemain
+    fatRemain = fat - fatRemain
+    carbsRemain = carbs - carbsRemain
+    value = calories - value
+
+    calsDict = dict()
+    calsDict['proteinRemain'] = proteinRemain
+    calsDict['fatRemain'] = fatRemain
+    calsDict['carbsRemain'] = carbsRemain
+    calsDict['calsRemain'] = value
+    
+    return calsDict
+

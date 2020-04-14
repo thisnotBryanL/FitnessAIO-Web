@@ -12,7 +12,7 @@ class Profile(models.Model):
     ]
     inches = models.IntegerField(default=0)
     feet = models.IntegerField(default=0)
-    weight = models.DecimalField(max_digits=1000,decimal_places=1)
+    weight = models.DecimalField(max_digits=1000,decimal_places=1, default=0)
     calories = models.DecimalField(decimal_places=1, max_digits=10000, default=0)
     gender = models.CharField(max_length= 200, choices= gender_choice, default= 'Male')
 

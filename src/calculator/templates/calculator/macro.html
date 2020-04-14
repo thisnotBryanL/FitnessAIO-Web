@@ -20,9 +20,9 @@
         src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script data-require="ui-bootstrap@*" data-semver="1.1.1"
         src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-1.1.1.js"></script>
-    <script type="text/javascript" src="{ % static 'javascript/app.js' % }"></script>
-    <script type="text/javascript" src="{ % static 'javascript/MainController.js' % }"></script>
-    <script type="text/javascript" src="{ % static 'javascript/ngStorage.js' % }"></script>
+    <script type="text/javascript" src="{% static 'javascript/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/MainController.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/ngStorage.js' %}"></script>
 </head>
 
 <body ng-controller="mainController as vm">

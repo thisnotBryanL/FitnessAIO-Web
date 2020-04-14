@@ -5,20 +5,79 @@
 
 {% if user.is_authenticated %}
 <h3>Hi, {{user.username}}</h3>
-<p>Your current calories = {{user.profile.calories}}</p>
 <form action="{% url 'registration:update-calories' %} "><input type="submit" value="Update Profile"></form>
 {% else %}
 <h3>You are not logged in.</h3>
 {% endif %}
 <hr>
-{% include 'status.html' %}
+
+<br>
+<div class="row">
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white  mb-3" id="total-orders">
+                <div class="card-header">
+                    <h5 class="card-title">Total Calories</h5>
+                </div>
+                <div class="card-body">
+                    <h5>{{user.profile.calories}}</h5>
+                    <h3 class="card-title"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white  mb-3" id="orders-delivered">
+                <div class="card-header">
+                    <h5 class="card-title">Calories Remaining</h5>
+                </div>
+                <div class="card-body">
+                    <h5>{{caloriesRemain}} </h5>
+                    <h3 class="card-title"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white  mb-3" id="orders-pending">
+                <div class="card-header">
+                    <h5 class="card-title">Today's Workout</h5>
+                </div>
+                <div class="card-body">
+
+                    {% now "l" as current_day %}
+                    {% if current_day == 'Monday' %}
+                    <h5>{{current_day}} - Chest and Triceps</h5>
+                    {% elif current_day == 'Tuesday' %}
+                    <h5>{{current_day}} - Back and Biceps</h5>
+                    {% elif current_day == 'Wednesday' %}
+                    <h5>{{current_day}} - Legs</h5>
+                    {% elif current_day == 'Thursday' %}
+                    <h5>{{current_day}} - Rest</h5>
+                    {% elif current_day == 'Friday' %}
+                    <h5>{{current_day}} - Cardio</h5>
+                    {% elif current_day == 'Saturday' %}
+                    <h5>{{current_day}} - Shoulders and Arms</h5>
+                    {% elif current_day == 'Sunday' %}
+                    <h5>{{current_day}} - Rest</h5>
+                    {% endif %}
+                    <h3 class="card-title"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <br>
 <div class="row">
     
     <div class="col-md-5">
         
-        <h5>Macros:</h5>
+        <h5>Macros Remaining:</h5>
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary  btn-sm btn-block" href="{% url 'registration:update-calories' %}">Update Calories</a>
@@ -28,18 +87,39 @@
                     <th>Carbohydrates</th>
                     <th>Fats</th>
                 </tr>
+                {% if user.is_authenticated %}
+                <tr>
+                    <td>{{proteinRemain}}</td>
+                    <td>{{carbsRemain}}</td>
+                    <td>{{fatRemain}}</td>
+                </tr>
+                {% endif %}
+
+            </table>
+        </div>
+        <br>
+        <h5>Macros:</h5>
+        <hr>
+        <div class="card card-body">
+            <table class="table table-sm">
+                <tr>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                </tr>
+                {% if user.is_authenticated %}
                 <tr>
                     <td>{{protein}}</td>
                     <td>{{carbs}}</td>
                     <td>{{fats}}</td>
                 </tr>
-
+                {% endif %}
+        
             </table>
         </div>
     </div>
-
     <div class="col-md-7">
-        <h5>LAST 5 Food Entries</h5>
+        <h5>Last 5 Food Entries:</h5>
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary  btn-sm btn-block" href="http://127.0.0.1:8000/foodEntry/create/">Create Food Entry</a>
@@ -50,15 +130,26 @@
                     <th>Protein</th>
                     <th>Carbohydrates</th>
                     <th>Fats</th>
-                    <th>Time</th>
+                    <th>Type</th>
                 </tr>
+                {% if user.is_authenticated %}
+                {% for foodItems in last5Food  %}
+                    
+                <tr>
+                    <td>{{foodItems.name}}</td>
+                    <td>{{foodItems.date_added}}</td>
+                    <td>{{foodItems.protein}}</td>
+                    <td>{{foodItems.carbohydrates}}</td>
+                    <td>{{foodItems.fat}}</td>
+                    <td>{{foodItems.time}}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
 
             </table>
         </div>
     </div>
 
 </div>
-
-
 
 {% endblock %}
