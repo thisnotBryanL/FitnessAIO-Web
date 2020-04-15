@@ -34,7 +34,7 @@ def home(request):
                 
         #Queries food items only for the current day
         queryset = FoodItem.objects.filter(
-            date_added__date=timezone.localdate())
+            date_added__date=timezone.localdate(), user = request.user)
 
         #Calculator to calculate the remaining calories left after querying food consumed for the day
         calsFromFood = calcRemainCalories(queryset, profile.calories,macros['protein'], macros['fat'], macros['carbs'])
@@ -82,8 +82,6 @@ def update_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, (
-                'Your profile was successfully updated!'))
             return redirect('homeView')
         else:
             messages.error(request, ('Please correct the error below.'))
@@ -104,8 +102,6 @@ def update_calories(request):
             request.POST, instance=request.user.profile)
         if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, (
-                'Your profile was successfully updated!'))
             return redirect('homeView')
         else:
             messages.error(request, ('Please correct the error below.'))

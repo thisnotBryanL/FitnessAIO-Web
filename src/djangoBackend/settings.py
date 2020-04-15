@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'registration',
     'foodEntry',
     'calculator',
+
+    'django_filters'
 ]
 
 MIDDLEWARE = [

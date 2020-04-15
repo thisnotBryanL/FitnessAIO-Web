@@ -6,7 +6,8 @@
 <div class="row">
     <div class="col-md">
         <div class="card card-body">
-            <h5>Food Entry:</h5>
+                
+            <h3>{{user.username}}</h3>
             <hr>
             <a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Edit Entry</a>
             <a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Delete Entry</a>
@@ -26,9 +27,9 @@
 
     <div class="col-md">
         <div class="card card-body">
-            <h5>Total Entries</h5>
+            <h5>Food Entries</h5>
             <hr>
-            <h1 style="text-align: center;padding: 10px"></h1>
+            <h1 style="text-align: center;padding: 10px">{{number_of_food}}</h1>
         </div>
     </div>
 </div>
@@ -38,8 +39,9 @@
 <div class="row">
     <div class="col">
         <div class="card card-body">
-            <form method="get">
 
+            <form method="get">
+                {{foodFilter.form}}
                 <button class="btn btn-primary" type="submit">Search</button>
             </form>
         </div>
@@ -53,12 +55,29 @@
         <div class="card card-body">
             <table class="table table-sm">
                 <tr>
+                    <th>Name</th>
                     <th>Total Calories</th>
-                    <th>Macros</th>
+                    <th>Macros (P/F/C) </th>
                     <th>Date</th>
-                    <th>Update</th>
+                    <th>Type</th>
+                    <th>Edit</th>
                     <th>Remove</th>
                 </tr>
+
+                {% if user.is_authenticated %}
+                {% for foodItems in foodlist  %}
+                
+                <tr>
+                    <td>{{foodItems.name}}</td>
+                    <td>{{foodItems.calories}}</td>
+                    <td>({{foodItems.protein}} / {{foodItems.fat}} / {{foodItems.carbohydrates}})</td>
+                    <td>{{foodItems.date_added}}</td>
+                    <td>{{foodItems.time}}</td>
+                    <td><a class="btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
+                    <td><a class="btn btn-sm btn-danger" href="{% url 'delete-food' foodItems.id%}">Delete</a></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
 
             </table>
         </div>
