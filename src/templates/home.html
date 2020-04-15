@@ -66,6 +66,8 @@
             <a class="btn btn-primary  btn-sm btn-block" href="http://127.0.0.1:8000/foodEntry/create/">Create Food Entry</a>
             <table class="table table-sm">
                 <tr>
+                    <th>Edit</th>
+                    <th>Delete</th>
                     <th>Name</th>
                     <th>Date</th>
                     <th>Protein</th>
@@ -77,6 +79,8 @@
                 {% for foodItems in last5Food  %}
                     
                 <tr>
+                    <td><a class= "btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
+                    <td><a class= "btn btn-sm btn-danger" href="">Delete</a></td>
                     <td>{{foodItems.name}}</td>
                     <td>{{foodItems.date_added}}</td>
                     <td>{{foodItems.protein}}</td>
