@@ -34,11 +34,10 @@ def home(request):
                 
         #Queries food items only for the current day
         queryset = FoodItem.objects.filter(
-            date_added__date=timezone.now().date())
+            date_added__date=timezone.localdate())
 
         #Calculator to calculate the remaining calories left after querying food consumed for the day
         calsFromFood = calcRemainCalories(queryset, profile.calories,macros['protein'], macros['fat'], macros['carbs'])
-        print(calsFromFood)
         
         context = {
             "userProfile" : profile,
