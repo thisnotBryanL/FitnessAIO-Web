@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<br>
+<div class = "row">
+    <div class = "col-md-6">
+        <div class ="card card-body " >
+            <center>
+            <p>Are you sure you want to delete "{{foodItem}}"?</p>
+            <form action="{% url 'delete-food' foodItem.id%}" method="POST">
+                {% csrf_token %}
+                <a class= "btn btn-warning" href="{% url 'homeView' %}">Cancel</a>
+                <input class= "btn btn-danger" type= "submit" name= "Confirm">
+            </form>
+            </center>
+        </div>
+    </div>
+</div>
+{% endblock content %}

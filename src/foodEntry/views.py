@@ -42,3 +42,13 @@ def updatefooditem_View(request,id):
         food_form = FoodEntryForm(instance=instance )
     return render(request,'foodEntry/updateFood.html', {'form' : food_form,
     'foodItem': instance})
+
+
+@login_required
+@transaction.atomic
+def deletefooditem_View(request, id):
+    instance = get_object_or_404(FoodItem, id=id)
+    if request.method == 'POST':
+        instance.delete()
+        return redirect('homeView')
+    return render(request, 'foodEntry/deleteFood.html', {'foodItem': instance})

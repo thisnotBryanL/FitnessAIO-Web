@@ -80,7 +80,7 @@
                     
                 <tr>
                     <td><a class= "btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
-                    <td><a class= "btn btn-sm btn-danger" href="">Delete</a></td>
+                    <td><a class= "btn btn-sm btn-danger" href="{% url 'delete-food' foodItems.id%}">Delete</a></td>
                     <td>{{foodItems.name}}</td>
                     <td>{{foodItems.date_added}}</td>
                     <td>{{foodItems.protein}}</td>
