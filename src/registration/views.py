@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.utils import timezone
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from calculator.calcFuncs import macroCalc, calcRemainCalories
 from.models import Profile
@@ -20,6 +23,68 @@ from django.views.generic import(
 )
 from .forms import SignUpForm, EditCaloriesForm
 from .models import Profile
+
+
+# Same way to do Json Requests for charts using REST Framework API View  (BEST WAY)
+# class ChartData(APIView):
+#     """
+#     View to list all users in the system.
+
+#     * Requires token authentication.
+#     * Only admin users are able to access this view.
+#     """
+#     authentication_classes = [authentication.TokenAuthentication]
+#     permission_classes = [permissions.IsAdminUser]
+
+#     def get(self, request, format=None):
+#         profile = request.user.profile
+#         macros = dict()
+#         macros = macroCalc(float(profile.weight), 'average',
+#                        float(profile.calories))
+#         data = {
+#             "carbs": macros['carbs'],
+#             "fats": macros['fat'],
+#             "protein": macros['protein']
+#         }
+#         return Response(data)
+
+# Returns JSON data to be used for charts
+def get_data(request):
+    labels = ['Protein', 'Carbohydrates', 'Fat']
+    
+    profile = request.user.profile
+    macros = dict()
+    macros = macroCalc(float(profile.weight), 'average',
+                       float(profile.calories))
+
+    #Queries food items only for the current day
+    queryset = FoodItem.objects.filter(
+        date_added__date=timezone.localdate(), user=request.user)
+
+    foodNames = []
+    foodCalories = []
+    calsConvert = 0
+    for items in queryset:
+        foodNames.append(items.name)
+        calsConvert = int(items.calories)
+        foodCalories.append(calsConvert)
+
+    #Calculator to calculate the remaining calories left after querying food consumed for the day
+    calsFromFood = calcRemainCalories(
+        queryset, profile.calories, macros['protein'], macros['fat'], macros['carbs'])
+
+    default_items = [calsFromFood['proteinRemain'],calsFromFood['carbsRemain'],calsFromFood['fatRemain']]
+    totMacros = [macros['protein'],
+                     macros['carbs'], macros['fat']]
+    
+    data = {
+        "labels" : labels,
+        "default": default_items,
+        "total_macros": totMacros,
+        "labels2": foodNames,
+        "totalCals" : foodCalories
+    }
+    return JsonResponse(data)
 
 def home(request):
     if not request.user.is_authenticated:

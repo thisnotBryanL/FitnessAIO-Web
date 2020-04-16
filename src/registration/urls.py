@@ -8,6 +8,6 @@ urlpatterns = [
     path('', signup, name= "signup"),
     path('update-profile/', update_profile, name="update-profile"),
     path('update-calories/', update_calories, name="update-calories"),
-    path('logout/', logout_requestView, name ="logout" )
+    path('logout/', logout_requestView, name ="logout" ),
 ]
  

@@ -1,6 +1,106 @@
 {% extends 'base.html' %}
+
+<script>
+    {% block jquery %}
+    var endpoint = '/api/data/'
+    var defaultData=[];
+    var totalMacros = [];
+    var labels = [];
+    var totalCals = [];
+    var labels2 = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function (data) {
+            labels = data.labels
+            labels2 = data.labels2
+            totalCals = data.totalCals
+            defaultData = data.default
+            totalMacros = data.total_macros
+
+            setChart()
+        },
+        error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setChart(){
+        var ctx = document.getElementById('myChart');
+        var ctx2 = document.getElementById('myChart2');
+        var ctx3 = document.getElementById('myChart3');
+        var myChart3 = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: labels2,
+                datasets: [{
+                    label: "# of calories",
+                    data: totalCals,
+                    borderColor: [
+                        'rgb(52,152,219)',
+                    ],
+                    borderWidth: 2,
+                    fill: false 
+                }],
+            },
+        });
+        var myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "# of grams",
+                    data: totalMacros,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }],
+            },
+        });
+            var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "# of grams",
+                    data: defaultData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+             },
+});
+
+    }
+
+
+//         var ctx = document.getElementById('myChart');
+
+    {% endblock %}
+</script>
+
+
+
 {% block content %}
 <br>
+
 {% include 'status.html' %}
 
 <br>
@@ -12,6 +112,7 @@
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary  btn-sm btn-block" href="{% url 'registration:update-calories' %}">Update Calories</a>
+            <canvas id="myChart" width="150" height="30"></canvas>
             <table class="table table-sm">
                 <tr>
                     <th>Protein</th>
@@ -32,6 +133,7 @@
         <h5>Macros:</h5>
         <hr>
         <div class="card card-body">
+            <canvas id="myChart2" width="150" height="30"></canvas>
             <table class="table table-sm">
                 <tr>
                     <th>Protein</th>
@@ -54,6 +156,7 @@
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary  btn-sm btn-block" href="http://127.0.0.1:8000/foodEntry/create/">Create Food Entry</a>
+            <canvas id="myChart3" width="150" height="30"></canvas>
             <table class="table table-sm">
                 <tr>
                     <th>Edit</th>
@@ -86,5 +189,6 @@
     </div>
 
 </div>
+
 
 {% endblock %}

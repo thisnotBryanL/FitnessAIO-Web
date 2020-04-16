@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import include, path
 
-from registration.views import home 
+from registration.views import home, get_data
 from django.views.generic import TemplateView
 from pages.views import profilePage_view
 
@@ -30,4 +30,5 @@ urlpatterns = [
     path('profile/', profilePage_view, name='profile-page'),
     path('foodEntry/', include('foodEntry.urls')),
     path('calculator/', include('calculator.urls')),
+    url(r'^api/data/$', get_data, name='api-data')
 ]
