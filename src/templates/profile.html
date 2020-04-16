@@ -9,8 +9,8 @@
                 
             <h3>{{user.username}}</h3>
             <hr>
-            <a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Edit Entry</a>
-            <a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Delete Entry</a>
+            <a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Edit Account</a>
+            <a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'registration:update-profile' %}">Delete Account</a>
 
         </div>
     </div>
@@ -65,7 +65,7 @@
                 </tr>
 
                 {% if user.is_authenticated %}
-                {% for foodItems in foodlist  %}
+                {% for foodItems in page_obj  %}
                 
                 <tr>
                     <td>{{foodItems.name}}</td>
@@ -78,6 +78,23 @@
                 </tr>
                 {% endfor %}
                 {% endif %}
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+                
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
 
             </table>
         </div>

@@ -1,16 +1,6 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <br>
-
-{% if user.is_authenticated %}
-<h3>Hi, {{user.username}}</h3>
-<form action="{% url 'registration:update-calories' %} "><input type="submit" value="Update Profile"></form>
-{% else %}
-<h3>You are not logged in.</h3>
-{% endif %}
-<hr>
-
 {% include 'status.html' %}
 
 <br>
