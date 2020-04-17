@@ -100,9 +100,12 @@
 
 {% block content %}
 <br>
-
+{% if not user.is_authenticated %}
+    <h5>Please Login/Register to access features</h5>
+{% endif %}
 {% include 'status.html' %}
 
+    
 <br>
 <div class="row">
     
@@ -125,6 +128,12 @@
                     <td>{{carbsRemain}}</td>
                     <td>{{fatRemain}}</td>
                 </tr>
+                {% else %}
+                <tr>
+                    <td>{{testUserProRemain}}</td>
+                    <td>{{testUserCarbRemain}}</td>
+                    <td>{{testUserFatRemain}}</td>
+                </tr>
                 {% endif %}
 
             </table>
@@ -146,13 +155,19 @@
                     <td>{{carbs}}</td>
                     <td>{{fats}}</td>
                 </tr>
+                {% else %}
+                <tr>
+                    <td>{{testUserProtein}}</td>
+                    <td>{{testUserCarb}}</td>
+                    <td>{{testUserFat}}</td>
+                </tr>
                 {% endif %}
         
             </table>
         </div>
     </div>
     <div class="col-md-7">
-        <h5>Last 5 Food Entries:</h5>
+        <h5>Recent Food Entries:</h5>
         <hr>
         <div class="card card-body">
             <a class="btn btn-primary  btn-sm btn-block" href="http://127.0.0.1:8000/foodEntry/create/">Create Food Entry</a>
@@ -182,6 +197,19 @@
                     <td>{{foodItems.time}}</td>
                 </tr>
                 {% endfor %}
+                {% else %}
+                    {% for foodItems in testUserFoodList  %}
+                    <tr>
+                        <td><a class="btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
+                        <td><a class="btn btn-sm btn-danger" href="{% url 'delete-food' foodItems.id%}">Delete</a></td>
+                        <td>{{foodItems.name}}</td>
+                        <td>{{foodItems.date_added}}</td>
+                        <td>{{foodItems.protein}}</td>
+                        <td>{{foodItems.carbohydrates}}</td>
+                        <td>{{foodItems.fat}}</td>
+                        <td>{{foodItems.time}}</td>
+                    </tr>
+                    {% endfor %}
                 {% endif %}
 
             </table>

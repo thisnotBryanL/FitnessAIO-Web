@@ -50,49 +50,108 @@ from .models import Profile
 
 # Returns JSON data to be used for charts
 def get_data(request):
+
     labels = ['Protein', 'Carbohydrates', 'Fat']
-    
-    profile = request.user.profile
-    macros = dict()
-    macros = macroCalc(float(profile.weight), 'average',
-                       float(profile.calories))
+    if not request.user.is_authenticated:
+        currFoodItems = FoodItem.objects.filter().order_by('-date_added')[:3]
+        proMacro = 180
+        fatMacro = 66
+        carbMacro = 220
+        userCals = 2200
 
-    #Queries food items only for the current day
-    queryset = FoodItem.objects.filter(
-        date_added__date=timezone.localdate(), user=request.user)
+        testUserCalsFromFood = calcRemainCalories(
+            currFoodItems, userCals, proMacro, fatMacro, carbMacro)
 
-    foodNames = []
-    foodCalories = []
-    calsConvert = 0
-    for items in queryset:
-        foodNames.append(items.name)
-        calsConvert = int(items.calories)
-        foodCalories.append(calsConvert)
+        foodNames = []
+        foodCalories = []
+        calsConvert = 0
+        for items in currFoodItems:
+            foodNames.append(items.name)
+            calsConvert = int(items.calories)
+            foodCalories.append(calsConvert)
+        print(foodNames)
+        print(foodCalories)
+        
+        default_items = [testUserCalsFromFood['proteinRemain'],
+                         testUserCalsFromFood['carbsRemain'], testUserCalsFromFood['fatRemain']]
+        totMacros = [proMacro,
+                     carbMacro, fatMacro]
 
-    #Calculator to calculate the remaining calories left after querying food consumed for the day
-    calsFromFood = calcRemainCalories(
-        queryset, profile.calories, macros['protein'], macros['fat'], macros['carbs'])
+        data = {
+            "labels": labels,
+            "default": default_items,
+            "total_macros": totMacros,
+            "labels2": foodNames,
+            "totalCals": foodCalories
+        }
+        
+    else: 
+        profile = request.user.profile
+        macros = dict()
+        macros = macroCalc(float(profile.weight), 'average',
+                        float(profile.calories))
 
-    default_items = [calsFromFood['proteinRemain'],calsFromFood['carbsRemain'],calsFromFood['fatRemain']]
-    totMacros = [macros['protein'],
-                     macros['carbs'], macros['fat']]
-    
-    data = {
-        "labels" : labels,
-        "default": default_items,
-        "total_macros": totMacros,
-        "labels2": foodNames,
-        "totalCals" : foodCalories
-    }
+        #Queries food items only for the current day
+        queryset = FoodItem.objects.filter(
+            date_added__date=timezone.localdate(), user=request.user)
+
+        foodNames = []
+        foodCalories = []
+        calsConvert = 0
+        for items in queryset:
+            foodNames.append(items.name)
+            calsConvert = int(items.calories)
+            foodCalories.append(calsConvert)
+
+        #Calculator to calculate the remaining calories left after querying food consumed for the day
+        calsFromFood = calcRemainCalories(
+            queryset, profile.calories, macros['protein'], macros['fat'], macros['carbs'])
+
+        default_items = [calsFromFood['proteinRemain'],calsFromFood['carbsRemain'],calsFromFood['fatRemain']]
+        totMacros = [macros['protein'],
+                        macros['carbs'], macros['fat']]
+        
+        data = {
+            "labels" : labels,
+            "default": default_items,
+            "total_macros": totMacros,
+            "labels2": foodNames,
+            "totalCals" : foodCalories
+        }
     return JsonResponse(data)
 
 def home(request):
+    userCals = 0
+    userCalsRemain = 0
     if not request.user.is_authenticated:
-        return render(request, 'home.html', {})
+
+        currFoodItems = FoodItem.objects.filter().order_by('-date_added')[:3]
+        proMacro = 180
+        fatMacro = 66
+        carbMacro = 220
+        userCals = 2200
+
+        testUserCalsFromFood = calcRemainCalories(
+            currFoodItems, userCals, proMacro, fatMacro, carbMacro)
+
+
+
+        return render(request, 'home.html', {
+            'testUserProRemain' : testUserCalsFromFood['proteinRemain'],
+            'testUserFatRemain' : testUserCalsFromFood['fatRemain'],
+            'testUserCarbRemain' : testUserCalsFromFood['carbsRemain'],
+            'userCalsRemain': testUserCalsFromFood['calsRemain'],
+            'testUserProtein': proMacro,
+            'testUserFat' : fatMacro,
+            'testUserCarb' : carbMacro,
+            'userCals' : userCals,
+            'testUserFoodList': currFoodItems
+        })
     else:
         profile = request.user.profile
         macros = dict()
         macros = macroCalc(float(profile.weight),'average',float(profile.calories))
+        userCals = profile.calories
 
         #Query Set that retrieves the 5 most recent food items entered
         last_5Food = FoodItem.objects.filter(user=profile.user).order_by('-date_added')[:5]
@@ -106,11 +165,12 @@ def home(request):
         
         context = {
             "userProfile" : profile,
+            "userCals" : userCals,
             "carbs" : macros['carbs'],
             "fats" : macros['fat'],
             "protein" : macros['protein'],
             "last5Food" : last_5Food,
-            "caloriesRemain" : calsFromFood['calsRemain'],
+            "userCalsRemain": calsFromFood['calsRemain'],
             "proteinRemain" : calsFromFood['proteinRemain'],
             "fatRemain" : calsFromFood['fatRemain'],
             "carbsRemain" : calsFromFood['carbsRemain']
