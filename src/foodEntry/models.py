@@ -11,10 +11,10 @@ class FoodItem(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length = 200)
     date_added = models.DateTimeField(auto_now_add=True)
-    calories = models.DecimalField(max_digits=10000, decimal_places=1)
-    protein = models.DecimalField(max_digits=10000, decimal_places=1)
-    fat = models.DecimalField(max_digits=10000, decimal_places=1)
-    carbohydrates = models.DecimalField(max_digits=10000, decimal_places=1)
+    calories = models.CharField(max_length=7)
+    protein = models.CharField(max_length=5)
+    fat = models.CharField(max_length=5)
+    carbohydrates = models.CharField(max_length=5)
     time = models.CharField(max_length = 200, choices = TIME_EATEN, null = True)
 
     def __str__(self):

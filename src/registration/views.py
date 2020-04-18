@@ -67,7 +67,7 @@ def get_data(request):
         calsConvert = 0
         for items in currFoodItems:
             foodNames.append(items.name)
-            calsConvert = int(items.calories)
+            calsConvert = float(items.calories)
             foodCalories.append(calsConvert)
         print(foodNames)
         print(foodCalories)
@@ -100,12 +100,12 @@ def get_data(request):
         calsConvert = 0
         for items in queryset:
             foodNames.append(items.name)
-            calsConvert = int(items.calories)
+            calsConvert = float(items.calories)
             foodCalories.append(calsConvert)
 
         #Calculator to calculate the remaining calories left after querying food consumed for the day
         calsFromFood = calcRemainCalories(
-            queryset, profile.calories, macros['protein'], macros['fat'], macros['carbs'])
+            queryset, float(profile.calories), macros['protein'], macros['fat'], macros['carbs'])
 
         default_items = [calsFromFood['proteinRemain'],calsFromFood['carbsRemain'],calsFromFood['fatRemain']]
         totMacros = [macros['protein'],
@@ -151,7 +151,7 @@ def home(request):
         profile = request.user.profile
         macros = dict()
         macros = macroCalc(float(profile.weight),'average',float(profile.calories))
-        userCals = profile.calories
+        userCals = float(profile.calories)
 
         #Query Set that retrieves the 5 most recent food items entered
         last_5Food = FoodItem.objects.filter(user=profile.user).order_by('-date_added')[:5]
@@ -161,8 +161,7 @@ def home(request):
             date_added__date=timezone.localdate(), user = request.user)
 
         #Calculator to calculate the remaining calories left after querying food consumed for the day
-        calsFromFood = calcRemainCalories(queryset, profile.calories,macros['protein'], macros['fat'], macros['carbs'])
-        
+        calsFromFood = calcRemainCalories(queryset, float(profile.calories),macros['protein'], macros['fat'], macros['carbs'])
         context = {
             "userProfile" : profile,
             "userCals" : userCals,

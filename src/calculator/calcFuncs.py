@@ -6,6 +6,7 @@ def convertToKilos(weight):
 
 # Height = inches
 def calorieCalc(weight,choice,gender,height,age):
+    weight = float(weight)
     if choice == 'seditary':
         bodyFat = .20
         activityMult = 1.3
@@ -17,6 +18,7 @@ def calorieCalc(weight,choice,gender,height,age):
         activityMult = 1.9
 
     weight = convertToKilos(weight)
+
     height = convertToCenti(height)
 
     print("Weight (KG) = ", weight)
@@ -36,6 +38,8 @@ print ('My calories = ', calories)
 print()
 
 def macroCalc(weight,choice,calories):
+    weight = float(weight)
+    calories = float(calories)
     macros = dict()
 
     if choice == 'seditary':
@@ -60,9 +64,9 @@ def macroCalc(weight,choice,calories):
     carb_calories = calories - cur_calories
     carb_macros = round(carb_calories/4)
 
-    macros['protein'] = protein_macros
-    macros['fat'] = fat_macros
-    macros['carbs'] = carb_macros
+    macros['protein'] = round(protein_macros,1)
+    macros['fat'] = round(fat_macros,1)
+    macros['carbs'] = round(carb_macros,1)
 
     return macros
 
@@ -78,22 +82,22 @@ def calcRemainCalories(foodlist, calories,protein,fat,carbs):
     carbsRemain = 0
 
     for item in foodlist:
-        value += item.calories
-        proteinRemain += item.protein
-        fatRemain += item.fat
-        carbsRemain += item.carbohydrates
+        value += float(item.calories)
+        proteinRemain += float(item.protein)
+        fatRemain += float(item.fat)
+        carbsRemain += float(item.carbohydrates)
         print(item.protein, " ", item.fat, " ", item.carbohydrates)
 
-    proteinRemain = protein - proteinRemain
-    fatRemain = fat - fatRemain
-    carbsRemain = carbs - carbsRemain
+    proteinRemain = float(protein) - proteinRemain
+    fatRemain = float(fat) - fatRemain
+    carbsRemain = float(carbs) - carbsRemain
     value = calories - value
 
     calsDict = dict()
-    calsDict['proteinRemain'] = proteinRemain
-    calsDict['fatRemain'] = fatRemain
-    calsDict['carbsRemain'] = carbsRemain
-    calsDict['calsRemain'] = value
+    calsDict['proteinRemain'] = round(proteinRemain,1)
+    calsDict['fatRemain'] = round(fatRemain,1)
+    calsDict['carbsRemain'] = round(carbsRemain,1)
+    calsDict['calsRemain'] = round(value,1)
     
     return calsDict
 
