@@ -1,1 +1,1 @@
-web: unicorn djangoBackend.wsgi --log-file -
+web: unicorn src.djangoBackend.wsgi --log-file -
