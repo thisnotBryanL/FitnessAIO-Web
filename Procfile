@@ -1,1 +1,1 @@
-web: gunicorn FitnessWeb.wsgi --log-file -
+web: gunicorn src.djangoBackend.wsgi --log-file -
