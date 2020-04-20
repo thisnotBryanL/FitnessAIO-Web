@@ -19,7 +19,6 @@ class SignUpForm(UserCreationForm):
 
 
 class EditCaloriesForm(forms.ModelForm):
-    calories = forms.DecimalField(required = False)
     class Meta:
         model = Profile
         fields = [
