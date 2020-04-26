@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+<script>
+    {% block jquery %}
+    var endpoint = '/api/data/'
+    var defaultData=[];
+    var totalMacros = [];
+    var labels = [];
+    var totalCals = [];
+    var labels2 = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function (data) {
+            labels = data.labels
+            labels2 = data.labels2
+            totalCals = data.totalCals
+            defaultData = data.default
+            totalMacros = data.total_macros
+
+            setChart()
+        },
+        error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+
+    function setChart(){
+        var ctx = document.getElementById('myChart');
+        var ctx2 = document.getElementById('myChart2');
+        var ctx3 = document.getElementById('myChart3');
+        var myChart3 = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: labels2,
+                datasets: [{
+                    label: "# of calories",
+                    data: totalCals,
+                    borderColor: [
+                        'rgb(52,152,219)',
+                    ],
+                    borderWidth: 2,
+                    fill: false 
+                }],
+            },
+        });
+        var myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "# of grams",
+                    data: totalMacros,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }],
+            },
+        });
+            var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "# of grams",
+                    data: defaultData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+             },
+});
+
+    }
+
+
+//         var ctx = document.getElementById('myChart');
+
+    {% endblock %}
+</script>
+
+
+
+{% block content %}
+<br>
+{% if not user.is_authenticated %}
+    <h5>Please Login/Register to access features</h5>
+{% endif %}
+{% include 'status.html' %}
+
+    
+<br>
+<div class="row">
+    
+    <div class="col-md-5">
+        
+        <h5>Macros Remaining:</h5>
+        <hr>
+        <div class="card card-body">
+            <a class="btn btn-primary  btn-sm btn-block" href="{% url 'registration:update-calories' %}">Update Calories</a>
+            <canvas id="myChart" width="150" height="30"></canvas>
+            <table class="table table-sm">
+                <tr>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                </tr>
+                {% if user.is_authenticated %}
+                <tr>
+                    <td>{{proteinRemain}}</td>
+                    <td>{{carbsRemain}}</td>
+                    <td>{{fatRemain}}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>{{testUserProRemain}}</td>
+                    <td>{{testUserCarbRemain}}</td>
+                    <td>{{testUserFatRemain}}</td>
+                </tr>
+                {% endif %}
+
+            </table>
+        </div>
+        <br>
+        <h5>Macros:</h5>
+        <hr>
+        <div class="card card-body">
+            <canvas id="myChart2" width="150" height="30"></canvas>
+            <table class="table table-sm">
+                <tr>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                </tr>
+                {% if user.is_authenticated %}
+                <tr>
+                    <td>{{protein}}</td>
+                    <td>{{carbs}}</td>
+                    <td>{{fats}}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>{{testUserProtein}}</td>
+                    <td>{{testUserCarb}}</td>
+                    <td>{{testUserFat}}</td>
+                </tr>
+                {% endif %}
+        
+            </table>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <h5>Recent Food Entries:</h5>
+        <hr>
+        <div class="card card-body">
+            <a class="btn btn-primary  btn-sm btn-block" href="{% url 'create-food' %}">Create Food Entry</a>
+            <canvas id="myChart3" width="150" height="30"></canvas>
+            <table class="table table-sm">
+                <tr>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Protein</th>
+                    <th>Carbohydrates</th>
+                    <th>Fats</th>
+                    <th>Type</th>
+                </tr>
+                {% if user.is_authenticated %}
+                {% for foodItems in last5Food  %}
+                    
+                <tr>
+                    <td><a class= "btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
+                    <td><a class= "btn btn-sm btn-danger" href="{% url 'delete-food' foodItems.id%}">Delete</a></td>
+                    <td>{{foodItems.name}}</td>
+                    <td>{{foodItems.date_added}}</td>
+                    <td>{{foodItems.protein}}</td>
+                    <td>{{foodItems.carbohydrates}}</td>
+                    <td>{{foodItems.fat}}</td>
+                    <td>{{foodItems.time}}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    {% for foodItems in testUserFoodList  %}
+                    <tr>
+                        <td><a class="btn btn-sm btn-info" href=" {% url 'update-food' foodItems.id%} ">Edit</a></td>
+                        <td><a class="btn btn-sm btn-danger" href="{% url 'delete-food' foodItems.id%}">Delete</a></td>
+                        <td>{{foodItems.name}}</td>
+                        <td>{{foodItems.date_added}}</td>
+                        <td>{{foodItems.protein}}</td>
+                        <td>{{foodItems.carbohydrates}}</td>
+                        <td>{{foodItems.fat}}</td>
+                        <td>{{foodItems.time}}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
